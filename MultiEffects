@@ -1,0 +1,55 @@
+import soundfile as sf
+import numpy as np
+
+class MultiEffect:
+    
+    def __init__(self, sound_file = "canlope.wav"):
+        #obtains an sound file 
+        self.edited_audio, self.fs = sf.read(sound_file)
+        
+    
+    def reverse(self):
+        #reverses the audio
+        self.edited_audio = self.edited_audio[::-1]
+        
+    def distort(self, distoring = 0.1):
+        #distorts the audio
+        self.edited_audio = np.clip(self.edited_audio, -distoring, distoring)
+        #self.edited_audio = clip_gian * self.edited_audio
+        
+    def mirror(self):
+        #mirrors the audio
+        self.edited_audio = np.flip(self.edited_audio, axis=1)
+        
+    def flip_half(self):
+        # temporary copy to get two different halfs with out changeing the orignal audio file
+       rev = self.edited_audio
+       #replaces the first half with the seond half
+       rev[:len(rev)//2] = self.edited_audio[len(self.edited_audio)//2:]
+       #replaces the second half with the first half
+       rev[len(rev)//2:] = self.edited_audio[:len(self.edited_audio)//2]
+       self.edited_audio = rev
+            
+    def writenewaudio(self):
+        #creates a new output of the audio file
+        sf.write('out.wav', self.edited_audio, self.fs)
+    
+    def print_method_names(self, effects):
+        #prints out the name of the method that is placed into it
+        print(effects.__name__)
+
+#effects asses the MultiEffect class and gives the sound file name
+effects = MultiEffect("canlope.wav")
+effects.reverse()
+effects.print_method_names(effects.reverse)
+effects.distort(0.5)
+effects.print_method_names(effects.distort)
+effects.mirror()
+effects.print_method_names(effects.mirror)
+effects.flip_half()
+effects.print_method_names(effects.flip_half)
+effects.writenewaudio()
+    
+    
+    
+    
